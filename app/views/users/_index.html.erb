@@ -1,0 +1,10 @@
+<% @books.each do |book| %>
+  <tr>
+    <td><%= book.title %></td>
+    <td><%= book.status %></td>
+    <td><%= link_to 'Show', book %></td>
+    <td><%= link_to 'Edit', edit_book_path(book) %></td>
+    <td><%= link_to 'Destroy', status0_path(book), method: :put, remote: true %></td>
+    <td><%= link_to 'Reserve', status_path(book), method: :post, remote: true %></td>
+  </tr>
+<% end %>
