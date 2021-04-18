@@ -1,0 +1,16 @@
+<div class="border m-1 p-3">
+    <h3>Book: <%= book.title%></h3>
+    <p><strong>Autor: </strong><%= book.author%></p>
+    <p><i><%= truncate(book.review, :length => 100) %>...</i></p>
+    <hr/>
+    <%= link_to "Ver Detalle",  get_book_info_path(book, 'ver'), remote: true, class:"btn btn-primary btn-sm rounded-0" %>
+    
+    <% if book.status == 0 %>
+        <%= link_to "Reservar", get_book_info_path(book, 'reservar'), remote: true, class:"btn btn-warning btn-sm rounded-0" %>
+    <% elsif book.status == 1 %>
+        <%= link_to "X", unreserve_book_path(book), method: "post", remote: true, class:"btn btn-info btn-sm rounded-0" %>
+        <%= link_to "Pagar", root_path, "data-toggle" => "modal", "data-target" => "#modalPayBook", class:"btn btn-info btn-sm rounded-0" %>
+    <% else %>
+        <%= link_to "Eliminar", destroy_book_path(book), method: :delete, data: {confirm: "Estas seguro ?"}, remote: true, class:"btn btn-danger btn-sm rounded-0" %>
+    <% end %>
+</div>

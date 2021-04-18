@@ -2,8 +2,12 @@
 
 one:
   title: MyString
+  author: MyString
+  review: MyText
   status: 1
 
 two:
   title: MyString
+  author: MyString
+  review: MyText
   status: 1

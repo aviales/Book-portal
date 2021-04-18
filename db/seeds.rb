@@ -7,6 +7,8 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 100.times do
-    name = Faker::Book.title
-    book = Book.create!(title: name, status: 0)
-end 
+    Book.create(title: Faker::Book.title,
+                author: Faker::Book.author,
+                review: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,',
+                status: 0)
+end

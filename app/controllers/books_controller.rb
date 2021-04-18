@@ -1,100 +1,51 @@
 class BooksController < ApplicationController
-  before_action :set_book, only: %i[ show edit update destroy status status0]
-  before_action :authenticate_user!
-
-
-  # GET /books or /books.json
-  def index
-    @books = Book.all    
+  def available
+    @books = Book.where(status: 0)
   end
 
-  # GET /books/1 or /books/1.json
-  def show
+  def reserved
+    @books = Book.where(status: 1)
   end
 
-  # GET /books/new
-  def new
-    @book = Book.new
+  def bought
+    @books = Book.where(status: 2)
   end
 
-  # GET /books/1/edit
-  def edit
+  def get_book
+    @book = Book.find(params[:book_id])
+    @type = params[:option]
   end
 
-  # POST /books or /books.json
-  def create
-    @book = Book.new(book_params)
+  def reserve_book
+    sleep 2
+    @book = Book.find(params[:book_id])
+    @book.status = 1
+    @book.save
+    @books = Book.where(status: 0)
+  end
 
-    respond_to do |format|
-      if @book.save
-        format.html { redirect_to @book, notice: "Book was successfully created." }
-        format.json { render :show, status: :created, location: @book }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @book.errors, status: :unprocessable_entity }
-      end
+  def unreserve_book
+    @book = Book.find(params[:book_id])
+    @book.status = 0
+    @book.save
+    @books = Book.where(status: 1)
+  end
+
+  def pay_book
+    @book = Book.find(params[:book][:book_id].to_i)
+    if (Time.now.utc - @book.updated_at.utc).to_i > 20
+      @book.status = 0
+    else
+      @book.status = 2
     end
+
+    @book.save
+    @books = Book.where(status: 1)
   end
 
-  # PATCH/PUT /books/1 or /books/1.json
-  def update
-    respond_to do |format|
-      if @book.update(book_params)
-        format.html { redirect_to @book, notice: "Book was successfully updated." }
-        format.json { render :show, status: :ok, location: @book }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @book.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  def status
-    respond_to do |format|
-      if @book.update(user: current_user, status: 1)
-        @books = Book.all
-        format.js { render nothing: true, notice: "Book was successfully reserverd." }
-        format.html { redirect_to @book, notice: "Book was successfully updated." }
-        format.json { render :show, status: :ok, location: @book }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @book.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  def status0
-    
-    respond_to do |format|
-      if @book.update(user: nil, status: 0)
-        @books = Book.all
-        format.js { render nothing: true, notice: "Book was successfully reserverd." }
-        format.html { redirect_to @book, notice: "Book was successfully updated." }
-        format.json { render :show, status: :ok, location: @book }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @book.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /books/1 or /books/1.json
   def destroy
+    @book = Book.find(params[:book_id])
     @book.destroy
-    respond_to do |format|
-      format.html { redirect_to books_url, notice: "Book was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    @books = Book.where(status: 2)
   end
-
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_book
-      @book = Book.find(params[:id])
-    end
-
-    # Only allow a list of trusted parameters through.
-    def book_params
-      params.require(:book).permit(:title, :status)
-    end
 end

@@ -1,0 +1,12 @@
+<% if @book.status == 0 %>
+    alert("El periodo de compra caduco y el libro volvio a estar disponible")
+<% else %>
+    alert("La compra fue Existosa! Revisa");
+<% end %>
+
+$('#books_list').html('');
+$('#books_list').html("<%= j render @books %>");
+
+$("#book_book_id option:selected").remove();
+
+$("#modalPayBook").modal('hide')
